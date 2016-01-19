@@ -23,6 +23,8 @@ Or install it yourself as:
 First create an instance via passing the location to the .sopm file.
 
 ```ruby
+require 'otrs/sopm'
+
 sopm = OTRS::SOPM.new 'path/to/Znuny4OTRS-Package.sopm'
 ```
 
