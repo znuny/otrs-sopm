@@ -31,9 +31,10 @@ class OTRS
     # @param change_log [String] the changelog.
     # @return (see #parse)
     def version(version, change_log)
-      
-      raise ArgumentError, 'Version has to be a string' unless version.is_a? String 
-      raise ArgumentError, 'Change_log hast to be a string' unless change_log.is_a? String 
+
+      fail ArgumentError, 'Version has to be a string' unless version.is_a? String
+      fail ArgumentError, 'Version has to be in the format "1.0.1" for releases or "1.0.1.1" for test releases' unless /\A\d+(?:\.\d+){2,3}\z/ =~ version
+      fail ArgumentError, 'Change_log hast to be a string' unless change_log.is_a? String
 
       # change Version
       @sopm.xpath('/otrs_package/Version').children[0].content = version
@@ -65,7 +66,7 @@ class OTRS
     # @param build_host [String] build host on which the OPM file was created.
     # @return (see #parse)
     def add_build_information(build_host)
-      raise ArgumentError, 'Build_host has to be a string' unless build_host.is_a? String 
+      fail ArgumentError, 'Build_host has to be a string' unless build_host.is_a? String
 
       # add BuildHost
       if @sopm.xpath('/otrs_package/BuildHost').children.length == 0
