@@ -83,4 +83,16 @@ class OtrsSopmTest < Minitest::Test
     assert_equal '1.0.1', new_sopm['change_log'].first['version']
     assert_equal 'Latest version.', new_sopm['change_log'].first['log']
   end
+
+  def test_version_version_delete_all
+    sopm = OTRS::SOPM.new 'test/testfiles/TestFile.sopm'
+
+    sopm.version_delete()
+    sopm.version_delete()
+
+    new_sopm = sopm.version_delete()
+
+    assert_equal '', new_sopm['version']
+    assert_nil new_sopm['change_log']
+  end
 end

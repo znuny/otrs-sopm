@@ -74,7 +74,9 @@ class OTRS
         new_version = nil
         if change_log_nodes.length > 0
           @sopm.xpath('/otrs_package/ChangeLog').first.remove
-          new_version = @sopm.xpath('/otrs_package/ChangeLog').first['Version']
+          if @sopm.xpath('/otrs_package/ChangeLog').length > 0
+            new_version = @sopm.xpath('/otrs_package/ChangeLog').first['Version']
+          end
         end
 
         @sopm.xpath('/otrs_package/Version').children[0].content = new_version
