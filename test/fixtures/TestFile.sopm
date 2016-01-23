@@ -2,6 +2,8 @@
 <otrs_package version="1.0">
     <Name>TestFile</Name>
     <Version>1.0.1</Version>
+    <ChangeLog Version="1.0.1" Date="2016-01-18 13:37:47 UTC">Latest version.</ChangeLog>
+    <ChangeLog Version="1.0.0" Date="2016-01-18 11:47:12 UTC">Previous version.</ChangeLog>
     <Framework>4.0.x</Framework>
     <PackageRequired Version="1.0.0">Znuny4OTRS-Repo</PackageRequired>
     <Vendor>Znuny GmbH</Vendor>

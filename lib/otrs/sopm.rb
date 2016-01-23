@@ -61,6 +61,39 @@ class OTRS
       store
     end
 
+    # Removes the given or latest (if no parameter is passed) version and removes the matching changelog from the SOPM file.
+    #
+    # @param version [String, nil] the version number or nil if the latest should get removed.
+    # @return (see #parse)
+    def version_delete(version_delete = nil)
+
+      change_log_nodes = @sopm.xpath('/otrs_package/ChangeLog')
+
+      if !version_delete || version_delete == @structure['version']
+
+        new_version = nil
+        if change_log_nodes.length > 0
+          @sopm.xpath('/otrs_package/ChangeLog').first.remove
+          new_version = @sopm.xpath('/otrs_package/ChangeLog').first['Version']
+        end
+
+        @sopm.xpath('/otrs_package/Version').children[0].content = new_version
+      elsif change_log_nodes.length > 0
+
+        change_log_nodes.each { |change_log_node|
+
+          next if !change_log_node['Version'].is_a? String
+          next if change_log_node['Version'] != version_delete
+
+          change_log_node.remove
+
+          break
+        }
+      end
+
+      store
+    end
+
     # Adds the buildhost and builddate to the SOPM file.
     #
     # @param build_host [String] build host on which the OPM file was created.

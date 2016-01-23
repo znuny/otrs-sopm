@@ -43,13 +43,44 @@ class OtrsSopmTest < Minitest::Test
 
   def test_version_add_version
     sopm = OTRS::SOPM.new 'test/testfiles/TestFile.sopm'
+
     new_sopm = sopm.parse
-    assert_nil new_sopm['change_log']
-    sopm.version('1.1.1', 'a comment 1')
-    new_sopm = sopm.parse
-    assert_equal new_sopm['change_log'].count, 1
-    sopm.version('1.1.2', 'a comment 2')
-    new_sopm = sopm.parse
-    assert_equal new_sopm['change_log'].count, 2
+    assert_equal 2, new_sopm['change_log'].count
+
+    new_sopm = sopm.version('1.1.1', 'a comment 1')
+    assert_equal 3, new_sopm['change_log'].count
+
+    new_sopm = sopm.version('1.1.2', 'a comment 2')
+    assert_equal 4, new_sopm['change_log'].count
+  end
+
+  def test_version_version_delete_latest_by_nil
+    sopm = OTRS::SOPM.new 'test/testfiles/TestFile.sopm'
+
+    new_sopm = sopm.version_delete()
+
+    assert_equal 1, new_sopm['change_log'].count
+    assert_equal '1.0.0', new_sopm['change_log'].first['version']
+    assert_equal 'Previous version.', new_sopm['change_log'].first['log']
+  end
+
+  def test_version_version_delete_latest_by_number
+    sopm = OTRS::SOPM.new 'test/testfiles/TestFile.sopm'
+
+    new_sopm = sopm.version_delete('1.0.1')
+
+    assert_equal 1, new_sopm['change_log'].count
+    assert_equal '1.0.0', new_sopm['change_log'].first['version']
+    assert_equal 'Previous version.', new_sopm['change_log'].first['log']
+  end
+
+  def test_version_version_delete_previous
+    sopm = OTRS::SOPM.new 'test/testfiles/TestFile.sopm'
+
+    new_sopm = sopm.version_delete('1.0.0')
+
+    assert_equal 1, new_sopm['change_log'].count
+    assert_equal '1.0.1', new_sopm['change_log'].first['version']
+    assert_equal 'Latest version.', new_sopm['change_log'].first['log']
   end
 end
