@@ -37,6 +37,18 @@ A new version can be created via passing the wanted version number and a changel
 sopm_hash_structure = sopm.version('1.0.1', 'Created first bug fix.')
 ```
 
+### Delete version
+
+A version can be deleted via passing the wanted version number or nothing for deleting the latest. If the current version gets deleted, the version number gets replaced by the previous one if one exisits:
+
+```ruby
+sopm_hash_structure = sopm.version_delete('1.0.1')
+
+# or for the latest
+
+sopm_hash_structure = sopm.version_delete()
+```
+
 ### Add build information
 
 It's recommended to add the build host and build date to the OPM file. Give the build host as a parameter with to add the build information via:
