@@ -43,13 +43,13 @@ class OtrsSopmTest < Minitest::Test
 
   def test_version_add_version
     sopm = OTRS::SOPM.new 'test/testfiles/TestFile.sopm'
-    newSopm = sopm.parse
-    assert_nil newSopm['change_log']
+    new_sopm = sopm.parse
+    assert_nil new_sopm['change_log']
     sopm.version('1.1.1', 'a comment 1')
-    newSopm = sopm.parse
-    assert_equal newSopm['change_log'].count, 1
+    new_sopm = sopm.parse
+    assert_equal new_sopm['change_log'].count, 1
     sopm.version('1.1.2', 'a comment 2')
-    newSopm = sopm.parse
-    assert_equal newSopm['change_log'].count, 2
+    new_sopm = sopm.parse
+    assert_equal new_sopm['change_log'].count, 2
   end
 end
