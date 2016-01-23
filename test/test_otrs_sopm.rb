@@ -52,8 +52,4 @@ class OtrsSopmTest < Minitest::Test
     newSopm = sopm.parse
     assert_equal newSopm['change_log'].count, 2
   end
-
-  def test_version_wrong_format
-
-  end
 end
