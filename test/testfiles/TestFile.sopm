@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_package version="1.0">
     <Name>TestFile</Name>
-    <Version>1.1.2</Version>
-    <ChangeLog Version="1.1.2" Date="2016-01-23 17:51:16 +0100">a comment 2</ChangeLog>
-    <ChangeLog Version="1.1.1" Date="2016-01-23 17:51:16 +0100">a comment 1</ChangeLog>
+    <Version>1.0.1</Version>
     <ChangeLog Version="1.0.1" Date="2016-01-18 13:37:47 UTC">Latest version.</ChangeLog>
     <ChangeLog Version="1.0.0" Date="2016-01-18 11:47:12 UTC">Previous version.</ChangeLog>
     <Framework>4.0.x</Framework>
