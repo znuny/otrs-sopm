@@ -2,6 +2,7 @@
 
 This gem provides a class to parse, manipulate and store SOPM files and create OPM strings from them.
 
+Current build state: ![Build Status](https://travis-ci.org/znuny/otrs-sopm.svg?branch=master)
 ## Installation
 
 Add this line to your application's Gemfile:
