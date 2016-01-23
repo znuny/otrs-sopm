@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<otrs_package version="1.0">
+    <Name>TestFile</Name>
+    <Version>1.0.1</Version>
+    <Framework>4.0.x</Framework>
+    <PackageRequired Version="1.0.0">Znuny4OTRS-Repo</PackageRequired>
+    <Vendor>Znuny GmbH</Vendor>
+    <URL>http://znuny.com/</URL>
+    <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
+    <Description Lang="en">What an awesome package.</Description>
+    <Description Lang="de">Was für ein tolles Paket.</Description>
+    <Filelist>
+        <File Permission="644" Location="Kernel/Modules/TestFile.pm"/>
+    </Filelist>
+</otrs_package>
