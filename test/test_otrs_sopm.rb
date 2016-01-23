@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'otrs/sopm'
 
-class SopmTest < Minitest::Test
+class OtrsSopmTest < Minitest::Test
 
   def setup
     FileUtils.cp 'test/fixtures/TestFile.sopm', 'test/testfiles/TestFile.sopm'
