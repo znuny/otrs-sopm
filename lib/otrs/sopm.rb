@@ -385,6 +385,10 @@ class OTRS
         @structure[ 'database_' + block_type ] = []
         intro_block_nodes.each { |intro_block_node|
 
+          next if !intro_block_node
+          next if !intro_block_node.children.is_a?(Array)
+          next if intro_block_node.children.empty?
+
           @structure[ 'database_' + block_type ].push intro_block_node.children[0].content
         }
       }
