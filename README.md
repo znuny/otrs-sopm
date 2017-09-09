@@ -66,7 +66,7 @@ sopm_hash_structure = sopm.add_file('path/to/File.pm')
 
 # equals
 
-sopm_hash_structure = sopm.add_file('path/to/File.pm', 664)
+sopm_hash_structure = sopm.add_file('path/to/File.pm', 660)
 ```
 
 ### Store changes

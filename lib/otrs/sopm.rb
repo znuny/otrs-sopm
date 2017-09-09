@@ -131,7 +131,7 @@ class OTRS
     # @param location [String] the file location.
     # @param permission [Integer] the permissions with which the files should get created.
     # @return (see #parse)
-    def add_file( location, permission = 644 )
+    def add_file( location, permission = 660 )
 
       files_nodes = @sopm.xpath('/otrs_package/Filelist/File')
 
