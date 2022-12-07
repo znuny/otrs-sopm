@@ -42,7 +42,7 @@ class OTRS
       # append ChangeLog
       change_log_nodes = @sopm.xpath('/otrs_package/ChangeLog')
       if change_log_nodes.length == 0
-        change_log_nodes = @sopm.xpath('/otrs_package/Framework')
+        change_log_nodes = @sopm.xpath('/otrs_package/Filelist')
       end
 
       # remove tabs from ChangeLog
@@ -242,7 +242,11 @@ class OTRS
         }
       end
 
-      # Framework
+      # 
+      
+      
+      
+      work
       @structure['framework'] = []
       framework_nodes = @sopm.xpath('/otrs_package/Framework')
       framework_nodes.each { |framework_node|
