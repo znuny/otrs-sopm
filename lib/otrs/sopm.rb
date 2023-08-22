@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'nokogiri'
 require 'base64'
 require 'otrs/sopm/version'
@@ -7,8 +9,7 @@ class OTRS
   # Handles all SOPM and OPM related stuff
   class SOPM
 
-    attr_reader :sopm
-    attr_reader :structure
+    attr_reader :sopm, :structure
 
     # Creates an instance based on a given SOPM file path.
     #
@@ -32,16 +33,16 @@ class OTRS
     # @return (see #parse)
     def version(version, change_log)
 
-      fail ArgumentError, 'Version has to be a string' unless version.is_a? String
-      fail ArgumentError, 'Version has to be in the format "1.0.1" for releases or "1.0.1.1" for test releases' unless /\A\d+(?:\.\d+){2,3}\z/ =~ version
-      fail ArgumentError, 'Change_log hast to be a string' unless change_log.is_a? String
+      raise ArgumentError, 'Version has to be a string' unless version.is_a? String
+      raise ArgumentError, 'Version has to be in the format "1.0.1" for releases or "1.0.1.1" for test releases' unless /\A\d+(?:\.\d+){2,3}\z/ =~ version
+      raise ArgumentError, 'Change_log hast to be a string' unless change_log.is_a? String
 
       # change Version
       @sopm.xpath('/otrs_package/Version').children[0].content = version
 
       # append ChangeLog
       change_log_nodes = @sopm.xpath('/otrs_package/ChangeLog')
-      if change_log_nodes.length == 0
+      if change_log_nodes.empty?
         change_log_nodes = @sopm.xpath('/otrs_package/Filelist')
       end
 
@@ -53,10 +54,10 @@ class OTRS
 
       new_change_log_entry            = Nokogiri::XML::Node.new 'ChangeLog', sopm
       new_change_log_entry['Version'] = version
-      new_change_log_entry['Date']    = Time.now
+      new_change_log_entry['Date']    = Time.zone.now
       new_change_log_entry.content    = change_log
 
-      change_log_nodes.first.previous = new_change_log_entry.to_xml + "\n    "
+      change_log_nodes.first.previous = "#{new_change_log_entry.to_xml}\n    "
 
       store
     end
@@ -72,15 +73,15 @@ class OTRS
       if !version_delete || version_delete == @structure['version']
 
         new_version = nil
-        if change_log_nodes.length > 0
+        if change_log_nodes.length.positive?
           @sopm.xpath('/otrs_package/ChangeLog').first.remove
-          if @sopm.xpath('/otrs_package/ChangeLog').length > 0
+          if @sopm.xpath('/otrs_package/ChangeLog').length.positive?
             new_version = @sopm.xpath('/otrs_package/ChangeLog').first['Version']
           end
         end
 
         @sopm.xpath('/otrs_package/Version').children[0].content = new_version
-      elsif change_log_nodes.length > 0
+      elsif change_log_nodes.length.positive?
 
         change_log_nodes.each { |change_log_node|
 
@@ -101,24 +102,24 @@ class OTRS
     # @param build_host [String] build host on which the OPM file was created.
     # @return (see #parse)
     def add_build_information(build_host)
-      fail ArgumentError, 'Build_host has to be a string' unless build_host.is_a? String
+      raise ArgumentError, 'Build_host has to be a string' unless build_host.is_a? String
 
       # add BuildHost
-      if @sopm.xpath('/otrs_package/BuildHost').children.length == 0
+      if @sopm.xpath('/otrs_package/BuildHost').children.empty?
 
         new_build_host_entry                                 = Nokogiri::XML::Node.new 'BuildHost', sopm
         new_build_host_entry.content                         = build_host
-        @sopm.xpath('/otrs_package/Filelist').first.previous = new_build_host_entry.to_xml + "\n    "
+        @sopm.xpath('/otrs_package/Filelist').first.previous = "#{new_build_host_entry.to_xml}\n    "
       else
         @sopm.xpath('/otrs_package/BuildHost').children[0].content = build_host
       end
 
       # add BuildDate
-      if @sopm.xpath('/otrs_package/BuildDate').children.length == 0
+      if @sopm.xpath('/otrs_package/BuildDate').children.empty?
 
         new_build_date_entry                                 = Nokogiri::XML::Node.new 'BuildDate', sopm
         new_build_date_entry.content                         = Time.zone.now
-        @sopm.xpath('/otrs_package/Filelist').first.previous = new_build_date_entry.to_xml + "\n    "
+        @sopm.xpath('/otrs_package/Filelist').first.previous = "#{new_build_date_entry.to_xml}\n    "
       else
         @sopm.xpath('/otrs_package/BuildDate').children[0].content = Time.zone.now
       end
@@ -153,7 +154,7 @@ class OTRS
       new_file_entry['Permission'] = permission
       new_file_entry['Location']   = location
 
-      files_nodes.last.next = "\n        " + new_file_entry.to_xml
+      files_nodes.last.next = "\n        #{new_file_entry.to_xml}"
 
       store
     end
@@ -191,35 +192,35 @@ class OTRS
 
       # URL
       # TODO: Remove! URL should be required
-      if @sopm.xpath('/otrs_package/URL').children.length > 0
+      if @sopm.xpath('/otrs_package/URL').children.length.positive?
         @structure['url'] = @sopm.xpath('/otrs_package/URL').children[0].content
       end
 
       # BuildDate
-      if @sopm.xpath('/otrs_package/BuildDate').children.length > 0
+      if @sopm.xpath('/otrs_package/BuildDate').children.length.positive?
         @structure['build_date'] = @sopm.xpath('/otrs_package/BuildDate').children[0].content
       end
 
       # BuildHost
-      if @sopm.xpath('/otrs_package/BuildHost').children.length > 0
+      if @sopm.xpath('/otrs_package/BuildHost').children.length.positive?
         @structure['build_host'] = @sopm.xpath('/otrs_package/BuildHost').children[0].content
       end
 
       # PackageIs* blocks (optional)
-      %w(Visible Downloadable Removable).each { |is_type|
+      %w[Visible Downloadable Removable].each { |is_type|
 
-        next if @sopm.xpath('/otrs_package/PackageIs' + is_type).children.length == 0
+        next if @sopm.xpath("/otrs_package/PackageIs#{is_type}").children.empty?
 
-        flag = @sopm.xpath('/otrs_package/PackageIs' + is_type).children[0].content
+        flag = @sopm.xpath("/otrs_package/PackageIs#{is_type}").children[0].content
 
         is_type.downcase!
 
-        @structure['package_is_' + is_type] = flag == '1' ? true : false
+        @structure["package_is_#{is_type}"] = flag == '1'
       }
 
       # ChangeLog (optional)
       change_log_nodes = @sopm.xpath('/otrs_package/ChangeLog')
-      if change_log_nodes.length > 0
+      if change_log_nodes.length.positive?
         @structure['change_log'] = []
         change_log_nodes.each { |change_log_node|
 
@@ -234,7 +235,7 @@ class OTRS
 
       # OS (optional)
       os_nodes = @sopm.xpath('/otrs_package/OS')
-      if os_nodes.length > 0
+      if os_nodes.length.positive?
         @structure['os'] = []
         os_nodes.each { |os_node|
 
@@ -251,7 +252,7 @@ class OTRS
 
       # PackageRequired (optional)
       package_required_nodes = @sopm.xpath('/otrs_package/PackageRequired')
-      if package_required_nodes.length > 0
+      if package_required_nodes.length.positive?
         @structure['package_required'] = []
         package_required_nodes.each { |package_required_node|
 
@@ -265,7 +266,7 @@ class OTRS
 
       # ModuleRequired (optional)
       module_required_nodes = @sopm.xpath('/otrs_package/ModuleRequired')
-      if module_required_nodes.length > 0
+      if module_required_nodes.length.positive?
         @structure['module_required'] = []
         module_required_nodes.each { |module_required_node|
 
@@ -306,16 +307,16 @@ class OTRS
       }
 
       # Code blocks (optional)
-      %w(Install Upgrade Reinstall Uninstall).each { |block_type|
+      %w[Install Upgrade Reinstall Uninstall].each { |block_type|
 
-        code_block_nodes = @sopm.xpath('/otrs_package/Code' + block_type)
+        code_block_nodes = @sopm.xpath("/otrs_package/Code#{block_type}")
 
-        next if code_block_nodes.length == 0
+        next if code_block_nodes.empty?
 
         # convert to lowercase
         block_type.downcase!
 
-        @structure[ 'code_' + block_type ] = []
+        @structure["code_#{block_type}"] = []
         code_block_nodes.each { |code_block_node|
 
           code_block_entry         = {}
@@ -333,21 +334,16 @@ class OTRS
             code_block_entry['if_not_package'] = code_block_node['IfNotPackage']
           end
 
-          @structure[ 'code_' + block_type ].push code_block_entry
+          @structure["code_#{block_type}"].push code_block_entry
         }
-      }
+        intro_block_nodes = @sopm.xpath("/otrs_package/Intro#{block_type}")
 
-      # Intro blocks (optional)
-      %w(Install Upgrade Reinstall Uninstall).each { |block_type|
-
-        intro_block_nodes = @sopm.xpath('/otrs_package/Intro' + block_type)
-
-        next if intro_block_nodes.length == 0
+        next if intro_block_nodes.empty?
 
         # convert to lowercase
         block_type.downcase!
 
-        @structure[ 'code_' + block_type ] = []
+        @structure["code_#{block_type}"] = []
         intro_block_nodes.each { |intro_block_node|
 
           intro_block_entry          = {}
@@ -368,30 +364,29 @@ class OTRS
             intro_block_entry['format'] = intro_block_node['Format']
           end
 
-          @structure[ 'code_' + block_type ].push intro_block_entry
+          @structure["code_#{block_type}"].push intro_block_entry
         }
-      }
+        intro_block_nodes = @sopm.xpath("/otrs_package/Database#{block_type}")
 
-      # Database blocks (optional)
-      %w(Install Upgrade Reinstall Uninstall).each { |block_type|
-
-        intro_block_nodes = @sopm.xpath('/otrs_package/Database' + block_type)
-
-        next if intro_block_nodes.length == 0
+        next if intro_block_nodes.empty?
 
         # convert to lowercase
         block_type.downcase!
 
-        @structure[ 'database_' + block_type ] = []
+        @structure["database_#{block_type}"] = []
         intro_block_nodes.each { |intro_block_node|
 
           next if !intro_block_node
           next if !intro_block_node.children.is_a?(Array)
           next if intro_block_node.children.empty?
 
-          @structure[ 'database_' + block_type ].push intro_block_node.children[0].content
+          @structure["database_#{block_type}"].push intro_block_node.children[0].content
         }
       }
+
+      # Intro blocks (optional)
+
+      # Database blocks (optional)
 
       @structure
     end
