@@ -10,6 +10,9 @@ require:
 Metrics/BlockLength:
   Enabled: false
 
+Rails/RefuteMethods:
+  Enabled: false
+
 # Zammad StyleGuide
 Layout/LineLength:
   Description: 'Limit lines to 80 characters.'

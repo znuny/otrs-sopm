@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# frozen_string_literal: false
 
 require 'minitest/autorun'
 require 'otrs/sopm'
@@ -11,7 +11,7 @@ class OtrsSopmTest < Minitest::Test
 
   def test_init_file_ok
     sopm = OTRS::SOPM.new 'test/testfiles/TestFile.sopm'
-    assert_not_nil( sopm, 'got a sopm' )
+    refute_nil( sopm, 'got a sopm' )
   end
 
   def test_init_file_not_ok
