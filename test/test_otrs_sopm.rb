@@ -1,3 +1,5 @@
+# frozen_string_literal: false
+
 require 'minitest/autorun'
 require 'otrs/sopm'
 
@@ -14,7 +16,7 @@ class OtrsSopmTest < Minitest::Test
 
   def test_init_file_not_ok
     assert_raises Errno::ENOENT do
-      sopm = OTRS::SOPM.new 'test/testfiles/TestFileNotFound.sopm'
+      OTRS::SOPM.new 'test/testfiles/TestFileNotFound.sopm'
     end
   end
 
