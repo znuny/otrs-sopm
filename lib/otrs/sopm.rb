@@ -242,11 +242,7 @@ class OTRS
         }
       end
 
-      # 
-      
-      
-      
-      work
+      # Framework
       @structure['framework'] = []
       framework_nodes = @sopm.xpath('/otrs_package/Framework')
       framework_nodes.each { |framework_node|
