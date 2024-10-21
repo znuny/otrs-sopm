@@ -4,6 +4,6 @@
 class OTRS
   # Contains just the version number, bundler / gem default design
   class SOPM
-    VERSION = '0.1.5'.freeze
+    VERSION = '0.1.6'.freeze
   end
 end
